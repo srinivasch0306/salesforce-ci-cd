@@ -22,10 +22,11 @@ jobs:
       # Step 2: Ensure Salesforce CLI is available on the PATH
       - script: |
           echo "Adding Salesforce CLI to PATH..."
-          $env:PATH += ";C:\Program Files\sf\bin"
-          echo "Updated PATH: $env:PATH"
+          set PATH=%PATH%;C:\Program Files\sf\bin
+          echo "Updated PATH: %PATH%"
           sfdx --version  # Verify Salesforce CLI is available
         displayName: 'Set Salesforce CLI Path'
+        shell: cmd  # Use cmd.exe for this step since you're on a Windows agent
 
       # Step 3: Authenticate to DevOrg using the secret
       - script: |
