@@ -25,30 +25,24 @@ jobs:
           echo "Salesforce CLI installed"
         displayName: 'Install Salesforce CLI'
 
-      # Step 3: Add Salesforce CLI path for Windows
-      - script: |
-          echo "## Adding Salesforce CLI to PATH"
-          echo '##[command]$env:PATH += ";C:\Program Files\sf\bin"' | Out-File -FilePath "$env:USERPROFILE\Desktop\add_path.ps1"
-        displayName: 'Set Salesforce CLI Path'
-
-      # Step 4: Authenticate to DevOrg using the secret
+      # Step 3: Authenticate to DevOrg using the secret
       - script: |
           echo $(DEVORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
         displayName: 'Authenticate to DevOrg'
 
-      # Step 5: Deploy to DevOrg
+      # Step 4: Deploy to DevOrg
       - script: |
           sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to DevOrg'
 
-      # Step 6: Authenticate to UatOrg using the secret
+      # Step 5: Authenticate to UatOrg using the secret
       - script: |
           echo $(UATORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
         displayName: 'Authenticate to UatOrg'
 
-      # Step 7: Deploy to UatOrg
+      # Step 6: Deploy to UatOrg
       - script: |
           sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to UatOrg'
