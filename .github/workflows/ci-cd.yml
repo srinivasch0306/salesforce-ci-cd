@@ -1,0 +1,54 @@
+name: Salesforce CI/CD
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the repository
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      # Set up Salesforce CLI
+      - name: Set up Salesforce CLI
+        uses: wadewegner/setup-sfdx-cli@v1
+        with:
+          version: 'latest'
+
+      # Authenticate to DevOrg
+      - name: Authenticate to DevOrg
+        run: |
+          sfdx auth:web:login --setalias DevOrg --instanceurl https://login.salesforce.com --setdefaultusername
+        env:
+          SFDX_AUTH_URL: ${{ secrets.DEVORG_SFDX_AUTH_URL }}
+
+      # Deploy to DevOrg
+      - name: Deploy to DevOrg
+        run: sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
+
+      # Authenticate to UatOrg
+      - name: Authenticate to UatOrg
+        run: |
+          sfdx auth:web:login --setalias UatOrg --instanceurl https://login.salesforce.com --setdefaultusername
+        env:
+          SFDX_AUTH_URL: ${{ secrets.UATORG_SFDX_AUTH_URL }}
+
+      # Deploy to UatOrg
+      - name: Deploy to UatOrg
+        run: sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
+
+      # Optional: Commit and push changes (if needed)
+      - name: Commit and push changes
+        run: |
+          git config --local user.email "your-email@example.com"
+          git config --local user.name "Your Name"
+          git add .
+          git commit -m "Deploy changes to both DevOrg and UatOrg"
+          git push
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
