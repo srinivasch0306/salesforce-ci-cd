@@ -17,7 +17,7 @@ jobs:
       # Step 2: Set Salesforce CLI Path (assuming it's already installed on the system)
       - script: |
           echo "Adding Salesforce CLI to PATH..."
-          echo "##vso[task.setvariable variable=PATH]C:\Program Files\sf\bin;$(PATH)"
+          echo "##vso[task.setvariable variable=PATH]C:\Program Files\Salesforce CLI\bin;$(PATH)"
           echo "Updated PATH: $(PATH)"
           sfdx --version  # Verify Salesforce CLI is available
         displayName: 'Set Salesforce CLI Path'
