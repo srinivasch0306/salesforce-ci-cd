@@ -7,21 +7,14 @@ jobs:
   - job: deploy
     displayName: 'Deploy to Salesforce Orgs'
     pool:
-      name: 'mess'  # Use your self-hosted agent pool 'def'
+      name: 'mess'  # Use your self-hosted agent pool 'mess'
 
     steps:
       # Step 1: Checkout the repository
       - checkout: self
         displayName: 'Checkout repository'
 
-      # Step 2: Install Salesforce CLI
-      - powershell: |
-          Invoke-WebRequest -Uri https://developer.salesforce.com/media/salesforce-cli/sfdx-installer.exe -OutFile sfdx-installer.exe
-          Start-Process -Wait -FilePath sfdx-installer.exe
-          Write-Host "Salesforce CLI installed"
-        displayName: 'Install Salesforce CLI'
-
-      # Step 3: Set Salesforce CLI Path
+      # Step 2: Set Salesforce CLI Path (assuming it's already installed on the system)
       - script: |
           echo "Adding Salesforce CLI to PATH..."
           echo "##vso[task.setvariable variable=PATH]C:\Program Files\sf\bin;$(PATH)"
@@ -29,24 +22,24 @@ jobs:
           sfdx --version  # Verify Salesforce CLI is available
         displayName: 'Set Salesforce CLI Path'
 
-      # Step 4: Authenticate to DevOrg using the secret
+      # Step 3: Authenticate to DevOrg using the secret
       - script: |
           echo $(DEVORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
         displayName: 'Authenticate to DevOrg'
 
-      # Step 5: Deploy to DevOrg
+      # Step 4: Deploy to DevOrg
       - script: |
           sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to DevOrg'
 
-      # Step 6: Authenticate to UatOrg using the secret
+      # Step 5: Authenticate to UatOrg using the secret
       - script: |
           echo $(UATORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
         displayName: 'Authenticate to UatOrg'
 
-      # Step 7: Deploy to UatOrg
+      # Step 6: Deploy to UatOrg
       - script: |
           sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to UatOrg'
