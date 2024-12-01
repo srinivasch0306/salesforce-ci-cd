@@ -15,10 +15,10 @@ jobs:
         displayName: 'Checkout repository'
 
       # Step 2: Install Salesforce CLI
-      - script: |
-          curl -o sfdx-installer.exe https://developer.salesforce.com/media/salesforce-cli/sfdx-installer.exe
-          start /wait sfdx-installer.exe
-          echo "Salesforce CLI installed"
+      - powershell: |
+          Invoke-WebRequest -Uri https://developer.salesforce.com/media/salesforce-cli/sfdx-installer.exe -OutFile sfdx-installer.exe
+          Start-Process -Wait -FilePath sfdx-installer.exe
+          Write-Host "Salesforce CLI installed"
         displayName: 'Install Salesforce CLI'
 
       # Step 3: Set Salesforce CLI Path
