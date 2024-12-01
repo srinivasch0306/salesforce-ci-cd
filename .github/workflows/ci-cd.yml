@@ -1,5 +1,6 @@
 name: Salesforce CI/CD Pipeline
 
+# Trigger the workflow on push to the main branch
 on:
   push:
     branches:
@@ -7,7 +8,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: windows-latest  # Use a Windows-based runner
+    runs-on: windows-latest  # Specify the runner as Windows-based
 
     steps:
       # Step 1: Checkout the repository
