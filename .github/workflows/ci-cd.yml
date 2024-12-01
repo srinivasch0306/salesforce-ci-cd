@@ -12,18 +12,20 @@ jobs:
   - job: deploy
     displayName: 'Deploy to Salesforce Orgs'
     pool:
-      vmImage: 'ubuntu-latest'
+      vmImage: 'windows-latest'  # Use a Windows-based agent
 
     steps:
       # Step 1: Checkout the repository
       - checkout: self
         displayName: 'Checkout repository'
 
-      # Step 2: Install Salesforce CLI
+      # Step 2: Ensure Salesforce CLI is available on the PATH
       - script: |
-          curl -sL https://developer.salesforce.com/media/salesforce-cli/install-sfdx-cli.sh | bash
-          echo "Salesforce CLI installed"
-        displayName: 'Install Salesforce CLI'
+          echo "Adding Salesforce CLI to PATH..."
+          $env:PATH += ";C:\Program Files\sf\bin"
+          echo "Updated PATH: $env:PATH"
+          sfdx --version  # Verify Salesforce CLI is available
+        displayName: 'Set Salesforce CLI Path'
 
       # Step 3: Authenticate to DevOrg using the secret
       - script: |
