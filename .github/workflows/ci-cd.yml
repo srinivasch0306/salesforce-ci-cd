@@ -1,62 +1,62 @@
 name: Salesforce CI/CD Pipeline
 
-trigger:
-  branches:
-    include:
+on:
+  push:
+    branches:
       - main
 
-variables:
-  - group: 'New variable group 01-Dec cicd'  # Ensure this matches the name of your variable group
-
 jobs:
-  - job: deploy
-    displayName: 'Deploy to Salesforce Orgs'
-    pool:
-      vmImage: 'windows-latest'  # Use a Windows-based agent
+  deploy:
+    runs-on: windows-latest  # Use a Windows-based runner
 
     steps:
       # Step 1: Checkout the repository
-      - checkout: self
-        displayName: 'Checkout repository'
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-      # Step 2: Ensure Salesforce CLI is available on the PATH
-      - script: |
+      # Step 2: Install Salesforce CLI
+      - name: Install Salesforce CLI
+        run: |
+          curl -sL https://developer.salesforce.com/media/salesforce-cli/install-sfdx-cli.sh | bash
+          echo "Salesforce CLI installed"
+
+      # Step 3: Add Salesforce CLI to PATH
+      - name: Set Salesforce CLI Path
+        run: |
           echo "Adding Salesforce CLI to PATH..."
           set PATH=%PATH%;C:\Program Files\sf\bin
           echo "Updated PATH: %PATH%"
           sfdx --version  # Verify Salesforce CLI is available
-        displayName: 'Set Salesforce CLI Path'
-        shell: cmd  # Use cmd.exe for this step since you're on a Windows agent
 
-      # Step 3: Authenticate to DevOrg using the secret
-      - script: |
+      # Step 4: Authenticate to DevOrg using the secret
+      - name: Authenticate to DevOrg
+        run: |
           echo $(DEVORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
-        displayName: 'Authenticate to DevOrg'
 
-      # Step 4: Deploy to DevOrg
-      - script: |
+      # Step 5: Deploy to DevOrg
+      - name: Deploy to DevOrg
+        run: |
           sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
-        displayName: 'Deploy to DevOrg'
 
-      # Step 5: Authenticate to UatOrg using the secret
-      - script: |
+      # Step 6: Authenticate to UatOrg using the secret
+      - name: Authenticate to UatOrg
+        run: |
           echo $(UATORG_SFDX_AUTH_URL) > auth-url.txt
           sfdx auth:sfdxurl:store --sfdxurlfile auth-url.txt
-        displayName: 'Authenticate to UatOrg'
 
-      # Step 6: Deploy to UatOrg
-      - script: |
+      # Step 7: Deploy to UatOrg
+      - name: Deploy to UatOrg
+        run: |
           sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
-        displayName: 'Deploy to UatOrg'
 
       # Optional Step: Commit and push changes (if needed)
-      - script: |
+      - name: Commit and push changes
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
           git config --local user.email "your-email@example.com"
           git config --local user.name "Your Name"
           git add .
           git commit -m "Deploy changes to both DevOrg and UatOrg"
           git push
-        env:
-          GITHUB_TOKEN: $(GITHUB_TOKEN)
-        displayName: 'Commit and push changes'
