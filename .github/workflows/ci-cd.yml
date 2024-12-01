@@ -5,6 +5,9 @@ trigger:
     include:
       - main
 
+variables:
+  - group: 'New variable group 01-Dec cicd'  # Ensure this matches the name of your variable group
+
 jobs:
   - job: deploy
     displayName: 'Deploy to Salesforce Orgs'
@@ -13,7 +16,7 @@ jobs:
 
     steps:
       # Step 1: Checkout the repository
-      - task: Checkout@1
+      - checkout: self
         displayName: 'Checkout repository'
 
       # Step 2: Install Salesforce CLI
