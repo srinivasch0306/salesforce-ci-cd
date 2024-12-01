@@ -15,10 +15,12 @@ jobs:
         displayName: 'Checkout repository'
 
       # Step 2: Install Salesforce CLI
-      - script: |
-          curl -sL https://developer.salesforce.com/media/salesforce-cli/install-sfdx-cli.sh | bash
-          echo "Salesforce CLI installed"
-        displayName: 'Install Salesforce CLI'
+     - script: |
+    curl -o sfdx-installer.exe https://developer.salesforce.com/media/salesforce-cli/sfdx-installer.exe
+    start /wait sfdx-installer.exe
+    echo "Salesforce CLI installed"
+  displayName: 'Install Salesforce CLI'
+
 
       # Step 3: Set Salesforce CLI Path
       - script: |
