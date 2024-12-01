@@ -3,17 +3,17 @@ name: Salesforce CI/CD Pipeline
 trigger:
   branches:
     include:
-      - main  # Trigger on changes to the 'main' branch
+      - main
 
 jobs:
   - job: deploy
     displayName: 'Deploy to Salesforce Orgs'
     pool:
-      vmImage: 'ubuntu-latest'  # Using Ubuntu VM for the pipeline
+      vmImage: 'ubuntu-latest'
 
     steps:
       # Step 1: Checkout the repository
-      - task: Checkout@2
+      - task: Checkout@1
         displayName: 'Checkout repository'
 
       # Step 2: Install Salesforce CLI
@@ -52,5 +52,5 @@ jobs:
           git commit -m "Deploy changes to both DevOrg and UatOrg"
           git push
         env:
-          GITHUB_TOKEN: $(GITHUB_TOKEN)  # Use the GitHub token if needed
+          GITHUB_TOKEN: $(GITHUB_TOKEN)
         displayName: 'Commit and push changes'
