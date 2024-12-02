@@ -28,10 +28,10 @@ jobs:
           sfdx auth:web:login --setalias DevOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to DevOrg'
 
-      # Step 4: Deploy to DevOrg
+      # Step 4: Deploy to DevOrg (Updated to use the correct `sf` command)
       - script: |
           echo "Deploying to DevOrg..."
-          sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
+          sf force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to DevOrg'
 
       # Step 5: Authenticate to UatOrg using web login
@@ -40,10 +40,10 @@ jobs:
           sfdx auth:web:login --setalias UatOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to UatOrg'
 
-      # Step 6: Deploy to UatOrg
+      # Step 6: Deploy to UatOrg (Updated to use the correct `sf` command)
       - script: |
           echo "Deploying to UatOrg..."
-          sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
+          sf force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to UatOrg'
 
       # Optional Step: Commit and push changes
