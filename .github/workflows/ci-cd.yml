@@ -1,5 +1,7 @@
-variables:
-  - group: Salesforce-Variables # This will link the variable group created in Azure DevOps
+trigger:
+  branches:
+    include:
+      - main
 
 jobs:
   - job: deploy
@@ -12,7 +14,7 @@ jobs:
       - checkout: self
         displayName: 'Checkout repository'
 
-      # Step 2: Set Salesforce CLI Path
+      # Step 2: Set Salesforce CLI Path (assuming it's installed on the system)
       - script: |
           echo "Adding Salesforce CLI to PATH..."
           echo "##vso[task.setvariable variable=PATH]C:\Program Files\Salesforce CLI\bin;$(PATH)"
@@ -23,23 +25,35 @@ jobs:
       # Step 3: Authenticate to DevOrg using web login
       - script: |
           echo "Authenticating to DevOrg using web login..."
-          sfdx auth:web:login --setalias $(DEVORG_ALIAS) --instanceurl $(INSTANCE_URL)
+          sfdx auth:web:login --setalias DevOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to DevOrg'
 
       # Step 4: Deploy to DevOrg
       - script: |
           echo "Deploying to DevOrg..."
-          sfdx force:source:deploy -p force-app --targetusername $(DEVORG_ALIAS) --checkonly --testlevel RunLocalTests
+          sfdx force:source:deploy -p force-app --targetusername DevOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to DevOrg'
 
       # Step 5: Authenticate to UatOrg using web login
       - script: |
           echo "Authenticating to UatOrg using web login..."
-          sfdx auth:web:login --setalias $(UATORG_ALIAS) --instanceurl $(INSTANCE_URL)
+          sfdx auth:web:login --setalias UatOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to UatOrg'
 
       # Step 6: Deploy to UatOrg
       - script: |
           echo "Deploying to UatOrg..."
-          sfdx force:source:deploy -p force-app --targetusername $(UATORG_ALIAS) --checkonly --testlevel RunLocalTests
+          sfdx force:source:deploy -p force-app --targetusername UatOrg --checkonly --testlevel RunLocalTests
         displayName: 'Deploy to UatOrg'
+
+      # Optional Step: Commit and push changes
+      - script: |
+          echo "Committing and pushing changes..."
+          git config --local user.email "your-email@example.com"
+          git config --local user.name "Your Name"
+          git add .
+          git commit -m "Deploy changes to both DevOrg and UatOrg"
+          git push
+        env:
+          GITHUB_TOKEN: $(GITHUB_TOKEN)
+        displayName: 'Commit and push changes'
