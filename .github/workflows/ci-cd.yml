@@ -19,26 +19,26 @@ jobs:
           echo "Adding Salesforce CLI to PATH..."
           echo "##vso[task.setvariable variable=PATH]\"C:\Program Files\Salesforce CLI\bin\";$(PATH)"
           echo "Updated PATH: $(PATH)"
-          sfdx --version  # Verify Salesforce CLI is available
+          sf --version  # Verify Salesforce CLI (sf) is available
         displayName: 'Set Salesforce CLI Path'
 
       # Step 3: Authenticate to DevOrg using web login
       - script: |
           echo "Authenticating to DevOrg using web login..."
-          sfdx auth:web:login --setalias DevOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
+          sf auth web:login --setalias DevOrg --instanceurl https://taruitsolutions-e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to DevOrg'
 
       # Step 4: Authenticate to UatOrg using web login
       - script: |
           echo "Authenticating to UatOrg using web login..."
-          sfdx auth:web:login --setalias UatOrg --instanceurl https://taruitsolutions-6e-dev-ed.develop.my.salesforce.com
+          sf auth web:login --setalias UatOrg --instanceurl https://taruitsolutions-6e-dev-ed.develop.my.salesforce.com
         displayName: 'Authenticate to UatOrg'
 
-      # Step 5: Deploy to UatOrg using sfdx command (with path to Salesforce CLI specified)
+      # Step 5: Deploy to UatOrg using sf command (with path to Salesforce CLI specified)
       - script: |
           echo "Deploying to UatOrg..."
           set PATH="C:\Program Files\Salesforce CLI\bin";%PATH%
-          sfdx force:source:deploy -p force-app --targetusername UatOrg
+          sf project deploy start --targetusername UatOrg --wait 10
         displayName: 'Deploy to UatOrg'
 
       # Optional Step: Commit and push changes
