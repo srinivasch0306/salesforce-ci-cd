@@ -17,7 +17,7 @@ jobs:
       # Step 2: Set Salesforce CLI Path (assuming it's installed on the system)
       - script: |
           echo "Adding Salesforce CLI to PATH..."
-          echo "##vso[task.setvariable variable=PATH]C:\Program Files\Salesforce CLI\bin;$(PATH)"
+          echo "##vso[task.setvariable variable=PATH]\"C:\Program Files\Salesforce CLI\bin\";$(PATH)"
           echo "Updated PATH: $(PATH)"
           sfdx --version  # Verify Salesforce CLI is available
         displayName: 'Set Salesforce CLI Path'
@@ -37,8 +37,7 @@ jobs:
       # Step 5: Deploy to UatOrg using sfdx command (with path to Salesforce CLI specified)
       - script: |
           echo "Deploying to UatOrg..."
-          # Specify the path to Salesforce CLI if it's not set in the PATH environment variable
-          set PATH=C:\Program Files\Salesforce CLI\bin;%PATH%
+          set PATH="C:\Program Files\Salesforce CLI\bin";%PATH%
           sfdx force:source:deploy -p force-app --targetusername UatOrg
         displayName: 'Deploy to UatOrg'
 
