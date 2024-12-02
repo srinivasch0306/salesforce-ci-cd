@@ -1,7 +1,3 @@
-
-
-
-
 trigger:
   branches:
     include:
@@ -50,7 +46,7 @@ jobs:
           git config --local user.email "srinivasch2202@gmail.com"
           git config --local user.name "srinivasch0306"
           echo "Adding new repository as remote..."
-          git remote add origin https://github.com/srinivasch0306/dummy.git
+          git remote add new-origin https://github.com/srinivasch0306/dummy.git  # Ensure this URL is correct
           echo "Pushing changes to new repository..."
           git add .
           git commit -m "Deploy changes to new repository" || echo "No changes to commit"
