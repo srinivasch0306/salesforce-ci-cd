@@ -4,7 +4,7 @@ trigger:
       - main
 
 jobs:
-  - job: test-auth
+  - job: test_auth
     displayName: 'Test Authentication to Salesforce Org'
     pool:
       name: 'mess'  # Use your self-hosted agent pool
