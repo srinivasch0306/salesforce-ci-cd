@@ -1,3 +1,7 @@
+
+
+
+
 trigger:
   branches:
     include:
@@ -43,14 +47,11 @@ jobs:
       # Optional Step: Commit and push changes
       - script: |
           echo "Committing and pushing changes..."
-          git config --local user.email "srinivasch2202@gmail.com"
-          git config --local user.name "srinivasch0306"
-          echo "Adding new repository as remote..."
-          git remote add new-origin https://github.com/srinivasch0306/dummy.git  # Ensure this URL is correct
-          echo "Pushing changes to new repository..."
+          git config --local user.email "your-email@example.com"
+          git config --local user.name "Your Name"
           git add .
-          git commit -m "Deploy changes to new repository" || echo "No changes to commit"
-          git push new-origin main  # Push to the new repository on the main branch
+          git commit -m "Deploy changes to both DevOrg and UatOrg"
+          git push
         env:
           GITHUB_TOKEN: $(GITHUB_TOKEN)
         displayName: 'Commit and push changes'
