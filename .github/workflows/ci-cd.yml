@@ -38,7 +38,7 @@ jobs:
       - script: |
           echo "Deploying to UatOrg..."
           # Specify the path to Salesforce CLI if it's not set in the PATH environment variable
-          set PATHE=C:\Program Files\Salesforce CLI\bin;%PATH%
+          set PATH=C:\Program Files\Salesforce CLI\bin;%PATH%
           sfdx force:source:deploy -p force-app --targetusername UatOrg
         displayName: 'Deploy to UatOrg'
 
